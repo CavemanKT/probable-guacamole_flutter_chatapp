@@ -208,26 +208,40 @@ class _RoomsPageState extends State<RoomsPage> {
                   itemBuilder: (context, index) {
                     final room = snapshot.data![index];
 
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ChatPage(
-                              room: room,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                    return Dismissible(
+                      key: ValueKey(room.id),
+                      background: Container(
+                        color: Colors.red,
+                        alignment: Alignment.centerLeft,
+                        child: const Icon(
+                          Icons.delete,
+                          color: Colors.white,
                         ),
-                        child: Row(
-                          children: [
-                            _buildAvatar(room),
-                            Text(room.name ?? ''),
-                          ],
+                      ),
+                      onDismissed: (_) {
+                        FirebaseChatCore.instance.deleteRoom(room.id);
+                      },
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ChatPage(
+                                room: room,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: Row(
+                            children: [
+                              _buildAvatar(room),
+                              Text(room.name ?? ''),
+                            ],
+                          ),
                         ),
                       ),
                     );
